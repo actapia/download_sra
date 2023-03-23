@@ -10,6 +10,7 @@ This application has been tested with the following software versions. If you ha
 * lxml 4.9.2
 * requests 2.28.2
 * Bash 5.2.2
+* sratoolkit 3.0.0
 
 ## Usage
 
