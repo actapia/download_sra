@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 function get_from_link {
-    { read -u 5 -r fn; read -u 5 -r link; } 5< <(python get_run_link.py "$1")
+    {
+	read -u 5 -r fn;
+	read -u 5 -r link;
+    } 5< <(python "$SCRIPT_DIR/get_run_link.py" "$1")
     wget -O "$fn" "$link"
     fasterq-dump "./$fn" -e "$jobs"
     #fasterq-dump <(wget -O - "$(python get_run_link.py "$1")")
 }
+export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 jobs=1
 declare -a accs
 while [ "$#" -gt 0 ]; do
