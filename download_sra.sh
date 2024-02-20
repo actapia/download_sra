@@ -6,16 +6,23 @@ function get_from_link {
     } 5< <(python "$SCRIPT_DIR/get_run_link.py" "$1")
     wget -O "$fn" "$link"
     fasterq-dump "./$fn" -e "$jobs"
+    if [ "$do_remove" = true ]; then
+	rm "./$fn"
+    fi
     #fasterq-dump <(wget -O - "$(python get_run_link.py "$1")")
 }
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 jobs=1
+do_remove=false
 declare -a accs
 while [ "$#" -gt 0 ]; do
     case "$1" in
 	"--jobs" | "-j")
 	    shift;
 	    jobs="$1"
+	    ;;
+	"--remove" | "-r")
+	    do_remove=true
 	    ;;
 	*)	    
 	    accs+=("$1")
@@ -25,6 +32,7 @@ while [ "$#" -gt 0 ]; do
     esac
     shift
 done
+export do_remove
 export jobs
 for acc in "${accs[@]}"; do
     echo "$acc"
