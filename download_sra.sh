@@ -5,7 +5,7 @@ if which wget; then
     }
 elif which curl; then
     function download {
-	curl -L -O "$1" "$2"
+	curl -L -o "$1" "$2"
     }
 else
     >&2 echo "wget or curl must be installed to use download_sra.sh"
