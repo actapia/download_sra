@@ -9,7 +9,7 @@ This application has been tested with the following software versions. If you ha
 * CPython 3.11
 * lxml 4.9.2
 * requests 2.28.2
-* Bash 5.2.2
+* Bash 3.2.57
 * sratoolkit 3.0.0
 
 ## Usage
