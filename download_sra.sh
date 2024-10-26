@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
+if which wget; then
+    function download {
+	wget -O "$1" "$2"
+    }
+elif which curl; then
+    function download {
+	curl -L -O "$1" "$2"
+    }
+else
+    >&2 echo "wget or curl must be installed to use download_sra.sh"
+    exit 1
+fi
 function get_from_link {
     {
 	read -u 5 -r fn;
 	read -u 5 -r link;
     } 5< <(python "$SCRIPT_DIR/get_run_link.py" "$1")
-    wget -O "$fn" "$link"
+    download "$fn" "$link"
     fasterq-dump "./$fn" -e "$jobs"
     if [ "$do_remove" = true ]; then
 	rm "./$fn"
