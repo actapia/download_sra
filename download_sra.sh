@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 if which wget; then
     function download {
 	wget -O "$1" "$2"
@@ -44,6 +45,22 @@ while [ "$#" -gt 0 ]; do
     esac
     shift
 done
+if [ "$jobs" -lt 0 ]; then
+    >&2 echo "Invalid parallel job count $jobs."
+    exit 1
+fi
+if [ "$jobs" -eq 0 ]; then
+    if jobs="$(nproc)"; then
+	:
+    elif jobs="$(sysctl -n hw.ncpu)"; then
+	:
+    fi
+fi
+if [ -z "$jobs" ] || [ "$jobs" -eq 0 ]; then
+    >&2 echo "Could not determine number of logical cores on system."
+    exit 1      
+fi
+echo "jobs is $jobs"
 export do_remove
 export jobs
 for acc in "${accs[@]}"; do
