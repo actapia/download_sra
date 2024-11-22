@@ -2,7 +2,11 @@
 set -x
 if which wget; then
     function download {
-	wget -O "$1" "$2"
+	if [ -t 1 ]; then
+	    wget -O "$1" "$2"
+	else
+	    wget --progress=dot:giga -O "$1" "$2"
+	fi
     }
 elif which curl; then
     function download {
