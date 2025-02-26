@@ -22,15 +22,18 @@ function get_from_link {
 	read -u 5 -r link;
     } 5< <(python "$SCRIPT_DIR/get_run_link.py" "$1")
     download "$fn" "$link"
-    fasterq-dump "./$fn" -e "$jobs"
-    if [ "$do_remove" = true ]; then
-	rm "./$fn"
+    if [ "$extract" = true ]; then
+	fasterq-dump "./$fn" -e "$jobs"
+	if [ "$do_remove" = true ]; then
+	    rm "./$fn"
+	fi
     fi
     #fasterq-dump <(wget -O - "$(python get_run_link.py "$1")")
 }
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 jobs=1
 do_remove=false
+extract=true
 declare -a accs
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -40,6 +43,9 @@ while [ "$#" -gt 0 ]; do
 	    ;;
 	"--remove" | "-r")
 	    do_remove=true
+	    ;;
+	"--no-extract" | "-X")
+	    extract=false
 	    ;;
 	*)	    
 	    accs+=("$1")
@@ -67,6 +73,7 @@ fi
 echo "jobs is $jobs"
 export do_remove
 export jobs
+export extract
 for acc in "${accs[@]}"; do
     echo "$acc"
     get_from_link "$acc"
